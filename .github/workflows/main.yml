@@ -1,18 +1,24 @@
-name: My First Workflow
+name: Run App Locally
 
-on: 
+on:
   push:
     branches: ["main"]
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  run-app:
+    runs-on: self-hosted
 
     steps:
-      - name: Check out code from github
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencoes
-        run: npm i
+      - name: Install dependencies
+        run: npm install
 
-      - name: Run
-        run: npm start
+      - name: Kill old process (if running)
+        run: |
+          pkill -f "node index.js" || true
+
+      - name: Start server
+        run: |
+          nohup node index.js > output.log 2>&1 &
